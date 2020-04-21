@@ -56,37 +56,47 @@ formatting = """
     name: 'main'
     BoxLayout:
         orientation: 'horizontal'
-        Label:
-            id: display
-            text: root.display
         BoxLayout:
+            orientation: 'vertical'
+            Label:
+                id: display
+                text: root.display
             Button:
-                text: 'Mine Stone(Guaranteed money)'
+                text: 'Upgrade your pickaxe (up to 10 times)'
+                on_press: root.upgradePick(1)
+        BoxLayout:
+            orientation: 'vertical'
+            Button:
+                text: 'Mine Stone'
                 on_press: root.addMoney(1,1)
             Button:
-                text: 'Mine Coal (Good chance for money)'
+                text: 'Mine Coal'
                 on_press: root.addMoney(3,3)
             Button:
-                text: 'Mine Iron (Lower chance for money)'
+                text: 'Mine Iron'
                 on_press: root.addMoney(5,5)
             Button:
-                text: 'Mine Gold (Small chance for money)'
+                text: 'Mine Gold'
                 on_press: root.addMoney(10,10)
             Button:
-                text: 'Mine Diamonds (Very small chance for money)'
+                text: 'Mine Diamonds'
                 on_press: root.addMoney(20,20)
 
 """
 Builder.load_string(formatting)
 
 
-# creating way to keep stats 
+# creating stats and functions
 class CharacterInfo:
 
-    def __init__(self, money=0, tier=1):
+    def __init__(self, money=0, tier=1, multiplier=1, pickCounter=0, pickCost = 10):
         self.money: int = money
         self.name: str = ""
         self.tier = tier
+#storing values to keep track of current pickaxe multiplier, how many have already been bought, and the cost of the next one
+        self.multiplier = multiplier
+        self.pickCounter = pickCounter
+        self.pickCost = pickCost
 
     def create_from_save(self):
         pass
@@ -98,9 +108,18 @@ class CharacterInfo:
         self.name = name
 
     def incrementMoney(self, amount=1, odds=1):
-    # allows money to only be incremented on certain random occasions
+# allows money to only be incremented on certain random occasions
         if random.randint(1,odds) =1:
-            self.money = self.money + amount
+            self.money = self.money + amount * self.multiplier
+        pass
+    
+    def changeMultiplier(self, amount):
+#checks if they have the money and if they have upgrades left, if so, changes the multiplier
+        if self.money > pickCost:
+            if self.pickCounter < 10:
+                self.multiplier = self.multiplier + amount
+                self.pickCounter = self.pickCounter +1
+                self.pickCost = self.pickCost * self.multiplier
         pass
 
     def __str__(self):
@@ -117,7 +136,7 @@ class MyScreenManager(ScreenManager, Widget):
 class IntroScreen(Screen):
     directions = StringProperty(str('''
     Welcome, this is the unlicensed Minecraft clicker!
-    Press the buttons to play, that’s pretty much all there is to it!
+    Click the buttons to mine. Each button has a different success rate, the higher the rate, the lower the payout. Upgrade your pickaxe to increase your payout. That’s all there is to it, good luck!
     '''))
 
     def load_or_start_new(self, savedata=''):
@@ -175,6 +194,9 @@ class MainScreen(Screen):
         stats.incrementMoney(amount, odds)
         self.display = str(stats)
 
+    def upgradePick(self, amount):
+        stats: CharacterInfo = self.get_data()
+        stats.changeMultiplier(amount)
 
 class OurApp(App):
 
