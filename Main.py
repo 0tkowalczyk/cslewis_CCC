@@ -105,7 +105,7 @@ class CharacterInfo:
 
     def __str__(self):
         return str(
-            "\n" + "Money: $" + str(self.cookies)
+            "\n" + "Money: $" + str(self.money)
         )
 
 
