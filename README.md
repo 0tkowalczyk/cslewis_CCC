@@ -17,10 +17,10 @@ You can lose all your progress in exchange for some kind of benefit
 
 Final project
 
-Minecraft clicker that has different options to mine.
+Minecraft clicker that has different options to mine. (4 extra buttons)
 
 Each has a different success rate with different payouts of money.
 
-Pickaxes can be upgraded for a price up to 10 times.
+Pickaxes can be upgraded for a price up to 10 times. (10 tiers of currency generation)
 
 4/21/2020
